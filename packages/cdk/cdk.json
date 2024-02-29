@@ -22,9 +22,9 @@
     "kendraDataSourceBucketName": null,
     "selfSignUpEnabled": true,
     "allowedSignUpEmailDomains": null,
-    "samlAuthEnabled": false,
-    "samlCognitoDomainName": "",
-    "samlCognitoFederatedIdentityProviderName": "",
+    "samlAuthEnabled": true,
+    "samlCognitoDomainName": "ai2takihyo.auth.ap-northeast-1.amazoncognito.com",
+    "samlCognitoFederatedIdentityProviderName": "EntraID",
     "modelRegion": "us-east-1",
     "modelIds": [
       "anthropic.claude-v2"
