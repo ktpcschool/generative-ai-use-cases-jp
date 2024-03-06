@@ -8,14 +8,14 @@ import {
   Chat,
   ListChatsResponse,
   Role,
-  Model,
 } from 'generative-ai-use-cases-jp';
 import { useEffect, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 import useChatApi from './useChatApi';
 import useConversation from './useConversation';
 import { KeyedMutator } from 'swr';
-import { getSystemContextById } from '../prompts';
+import { getPrompter } from '../prompts';
+import { findModelByModelId } from './useModel';
 
 const useChatState = create<{
   chats: {
@@ -24,9 +24,14 @@ const useChatState = create<{
       messages: ShownMessage[];
     };
   };
+  modelIds: {
+    [id: string]: string;
+  };
   loading: {
     [id: string]: boolean;
   };
+  getModelId: (id: string) => string;
+  setModelId: (id: string, newModelId: string) => void;
   setLoading: (id: string, newLoading: boolean) => void;
   init: (id: string) => void;
   clear: (id: string) => void;
@@ -40,9 +45,9 @@ const useChatState = create<{
     content: string,
     mutateListChat: KeyedMutator<ListChatsResponse>,
     ignoreHistory: boolean,
-    model: Model | undefined,
     preProcessInput: ((message: ShownMessage[]) => ShownMessage[]) | undefined,
-    postProcessOutput: ((message: string) => string) | undefined
+    postProcessOutput: ((message: string) => string) | undefined,
+    sessionId: string | undefined
   ) => void;
   sendFeedback: (
     id: string,
@@ -57,6 +62,21 @@ const useChatState = create<{
     predictStream,
     predictTitle,
   } = useChatApi();
+
+  const getModelId = (id: string) => {
+    return get().modelIds[id] || '';
+  };
+
+  const setModelId = (id: string, newModelId: string) => {
+    set((state) => {
+      return {
+        modelIds: {
+          ...state.modelIds,
+          [id]: newModelId,
+        },
+      };
+    });
+  };
 
   const setLoading = (id: string, newLoading: boolean) => {
     set((state) => {
@@ -83,7 +103,9 @@ const useChatState = create<{
   };
 
   const initChatWithSystemContext = (id: string) => {
-    const systemContext = getSystemContextById(id);
+    const prompter = getPrompter(getModelId(id));
+    const systemContext = prompter.systemContext(id);
+
     initChat(id, [{ role: 'system', content: systemContext }], undefined);
   };
 
@@ -100,9 +122,15 @@ const useChatState = create<{
   };
 
   const setPredictedTitle = async (id: string) => {
+    const modelId = getModelId(id);
+    const model = findModelByModelId(modelId)!;
+    const prompter = getPrompter(modelId);
     const title = await predictTitle({
+      model,
       chat: get().chats[id].chat!,
-      messages: omitUnusedMessageProperties(get().chats[id].messages),
+      prompt: prompter.setTitlePrompt({
+        messages: omitUnusedMessageProperties(get().chats[id].messages),
+      }),
     });
     setTitle(id, title);
   };
@@ -195,7 +223,10 @@ const useChatState = create<{
 
   return {
     chats: {},
+    modelIds: {},
     loading: {},
+    getModelId,
+    setModelId,
     setLoading,
     init: (id: string) => {
       if (!get().chats[id]) {
@@ -267,12 +298,31 @@ const useChatState = create<{
       content: string,
       mutateListChat,
       ignoreHistory: boolean,
-      model: Model | undefined,
       preProcessInput:
         | ((message: ShownMessage[]) => ShownMessage[])
         | undefined = undefined,
-      postProcessOutput: ((message: string) => string) | undefined = undefined
+      postProcessOutput: ((message: string) => string) | undefined = undefined,
+      sessionId: string | undefined = undefined
     ) => {
+      const modelId = get().modelIds[id];
+
+      if (!modelId) {
+        console.error('modelId is not set');
+        return;
+      }
+
+      const model = findModelByModelId(modelId);
+
+      if (!model) {
+        console.error(`model not found for ${modelId}`);
+        return;
+      }
+
+      // Agent 用の対応
+      if (sessionId) {
+        model.sessionId = sessionId;
+      }
+
       setLoading(id, true);
 
       const unrecordedUserMessage: UnrecordedMessage = {
@@ -323,6 +373,9 @@ const useChatState = create<{
             const oldAssistantMessage = draft[id].messages.pop()!;
             const newAssistantMessage: UnrecordedMessage = {
               role: 'assistant',
+              // 新規モデル追加時は、デフォルトで Claude の prompter が利用されるため
+              // 出力が <output></output> で囲まれる可能性がある
+              // 以下の処理ではそれに対応するため、<output></output> xml タグを削除している
               content: (oldAssistantMessage.content + chunk).replace(
                 /(<output>|<\/output>)/g,
                 ''
@@ -399,6 +452,8 @@ const useChat = (id: string, chatId?: string) => {
   const {
     chats,
     loading,
+    getModelId,
+    setModelId,
     setLoading,
     init,
     clear,
@@ -437,6 +492,12 @@ const useChat = (id: string, chatId?: string) => {
 
   return {
     loading: loading[id] ?? false,
+    getModelId: () => {
+      return getModelId(id);
+    },
+    setModelId: (newModelId: string) => {
+      setModelId(id, newModelId);
+    },
     setLoading: (newLoading: boolean) => {
       setLoading(id, newLoading);
     },
@@ -462,20 +523,20 @@ const useChat = (id: string, chatId?: string) => {
     postChat: (
       content: string,
       ignoreHistory: boolean = false,
-      model: Model | undefined = undefined,
       preProcessInput:
         | ((message: ShownMessage[]) => ShownMessage[])
         | undefined = undefined,
-      postProcessOutput: ((message: string) => string) | undefined = undefined
+      postProcessOutput: ((message: string) => string) | undefined = undefined,
+      sessionId: string | undefined = undefined
     ) => {
       post(
         id,
         content,
         mutateConversations,
         ignoreHistory,
-        model,
         preProcessInput,
-        postProcessOutput
+        postProcessOutput,
+        sessionId
       );
     },
     sendFeedback: async (createdDate: string, feedback: string) => {

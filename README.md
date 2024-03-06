@@ -91,7 +91,7 @@ Generative AI（生成 AI）は、ビジネスの変革に革新的な可能性�
 
 このサンプルでは、フロントエンドは React を用いて実装し、静的ファイルは Amazon CloudFront + Amazon S3 によって配信されています。バックエンドには Amazon API Gateway + AWS Lambda、認証には Amazon Congito を使用しています。また、LLM は Amazon Bedrock を使用します。RAG のデータソースには Amazon Kendra を利用しています。
 
-![arch.png](/imgs/arch.png)
+![arch.drawio.png](/imgs/arch.drawio.png)
 
 ## デプロイ
 
@@ -143,6 +143,7 @@ npm run cdk:deploy
     - [地理的制限](/docs/DEPLOY_OPTION.md#地理的制限)
   - [SAML 認証](/docs/DEPLOY_OPTION.md#SAML-認証)
 - [モニタリング用のダッシュボードの有効化](/docs/DEPLOY_OPTION.md#モニタリング用のダッシュボードの有効化)
+- [ファイルアップロード機能の有効化](/docs/DEPLOY_OPTION.md#ファイルアップロード機能の有効化)
 
 ## その他
  - [アップデート方法](/docs/UPDATE.md)

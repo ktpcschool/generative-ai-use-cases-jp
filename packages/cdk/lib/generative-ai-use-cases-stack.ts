@@ -8,6 +8,7 @@ import {
   Rag,
   Transcribe,
   CommonWebAcl,
+  RecognizeFile,
 } from './construct';
 import { CfnWebACLAssociation } from 'aws-cdk-lib/aws-wafv2';
 import { Template } from './construct/template';
@@ -45,10 +46,17 @@ export class GenerativeAiUseCasesStack extends Stack {
       this.node.tryGetContext('selfSignUpEnabled')!;
     const allowedSignUpEmailDomains: string[] | null | undefined =
       this.node.tryGetContext('allowedSignUpEmailDomains');
-    const samlAuthEnabled: boolean = this.node.tryGetContext('samlAuthEnabled')!;
-    const samlCognitoDomainName: string = this.node.tryGetContext('samlCognitoDomainName')!;
-    const samlCognitoFederatedIdentityProviderName: string = this.node.tryGetContext('samlCognitoFederatedIdentityProviderName')!;
+    const samlAuthEnabled: boolean =
+      this.node.tryGetContext('samlAuthEnabled')!;
+    const samlCognitoDomainName: string = this.node.tryGetContext(
+      'samlCognitoDomainName'
+    )!;
+    const samlCognitoFederatedIdentityProviderName: string =
+      this.node.tryGetContext('samlCognitoFederatedIdentityProviderName')!;
     const agentEnabled = this.node.tryGetContext('agentEnabled') || false;
+    const recognizeFileEnabled: boolean = this.node.tryGetContext(
+      'recognizeFileEnabled'
+    )!;
 
     if (typeof ragEnabled !== 'boolean') {
       throw new Error(errorMessageForBooleanContext('ragEnabled'));
@@ -62,8 +70,14 @@ export class GenerativeAiUseCasesStack extends Stack {
       throw new Error(errorMessageForBooleanContext('samlAuthEnabled'));
     }
 
+    if (typeof recognizeFileEnabled !== 'boolean') {
+      throw new Error(errorMessageForBooleanContext('recognizeFileEnabled'));
+    }
+
     const auth = new Auth(this, 'Auth', {
       selfSignUpEnabled,
+      allowedIpV4AddressRanges: props.allowedIpV4AddressRanges,
+      allowedIpV6AddressRanges: props.allowedIpV6AddressRanges,
       allowedSignUpEmailDomains,
       samlAuthEnabled,
     });
@@ -115,6 +129,7 @@ export class GenerativeAiUseCasesStack extends Stack {
       samlCognitoDomainName,
       samlCognitoFederatedIdentityProviderName,
       agentNames: api.agentNames,
+      recognizeFileEnabled,
     });
 
     if (ragEnabled) {
@@ -136,6 +151,13 @@ export class GenerativeAiUseCasesStack extends Stack {
       idPool: auth.idPool,
       api: api.api,
     });
+
+    if (recognizeFileEnabled) {
+      new RecognizeFile(this, 'RecognizeFile', {
+        userPool: auth.userPool,
+        api: api.api,
+      });
+    }
 
     new CfnOutput(this, 'Region', {
       value: this.region,
@@ -207,6 +229,10 @@ export class GenerativeAiUseCasesStack extends Stack {
 
     new CfnOutput(this, 'AgentNames', {
       value: JSON.stringify(api.agentNames),
+    });
+
+    new CfnOutput(this, 'RecognizeFileEnabled', {
+      value: recognizeFileEnabled.toString(),
     });
 
     this.userPool = auth.userPool;
