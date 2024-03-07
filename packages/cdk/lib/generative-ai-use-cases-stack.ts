@@ -8,6 +8,7 @@ import {
   Rag,
   Transcribe,
   CommonWebAcl,
+  File,
   RecognizeFile,
 } from './construct';
 import { CfnWebACLAssociation } from 'aws-cdk-lib/aws-wafv2';
@@ -123,6 +124,7 @@ export class GenerativeAiUseCasesStack extends Stack {
       webAclId: props.webAclId,
       modelRegion: api.modelRegion,
       modelIds: api.modelIds,
+      multiModalModelIds: api.multiModalModelIds,
       imageGenerationModelIds: api.imageGenerationModelIds,
       endpointNames: api.endpointNames,
       samlAuthEnabled,
@@ -152,10 +154,16 @@ export class GenerativeAiUseCasesStack extends Stack {
       api: api.api,
     });
 
+    const file = new File(this, 'File', {
+      userPool: auth.userPool,
+      api: api.api,
+    });
+
     if (recognizeFileEnabled) {
       new RecognizeFile(this, 'RecognizeFile', {
         userPool: auth.userPool,
         api: api.api,
+        fileBucket: file.fielBucket,
       });
     }
 
@@ -201,6 +209,10 @@ export class GenerativeAiUseCasesStack extends Stack {
 
     new CfnOutput(this, 'ModelIds', {
       value: JSON.stringify(api.modelIds),
+    });
+
+    new CfnOutput(this, 'MultiModalModelIds', {
+      value: JSON.stringify(api.multiModalModelIds),
     });
 
     new CfnOutput(this, 'ImageGenerateModelIds', {
