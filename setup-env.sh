@@ -2,9 +2,9 @@
 
 set -eu
 
-STACK_NAME='GenerativeAiUseCasesStack'
+STACK_NAME='GenerativeAiUseCasesStack_watanabe'
 
-function stack_output {
+stack_output (){
     aws cloudformation describe-stacks \
         --stack-name $STACK_NAME \
         --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" \
