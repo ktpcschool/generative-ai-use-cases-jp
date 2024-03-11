@@ -54,7 +54,7 @@ const anonymousUsageTracking: boolean = !!app.node.tryGetContext(
 
 const generativeAiUseCasesStack = new GenerativeAiUseCasesStack(
   app,
-  'aws-cloud9-generative-ai-watanabe-7ac34a58b29f4fbda930ee021ea00c62',
+  'aws-cloud9-generative-ai-use-cases-watanabe-d344afe616b94989b91e394491095bf5',
   {
     env: {
       region: process.env.CDK_DEFAULT_REGION,
