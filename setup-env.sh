@@ -2,7 +2,7 @@
 
 set -eu
 
-STACK_NAME='aws-cloud9-generative-ai-use-cases-jp-watanabe-2b08881c260941a69bd6498674710ea4'
+STACK_NAME='aws-cloud9-generative-ai-use-cases-jp-watanabe-afbfeda02e4d41cb875b926108dd3d9f'
 
 stack_output (){
     aws cloudformation describe-stacks \
