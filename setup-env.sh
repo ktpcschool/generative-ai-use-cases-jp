@@ -4,7 +4,7 @@ set -eu
 
 STACK_NAME='GenerativeAiUseCasesStack'
 
-stack_output (){
+function stack_output {
     aws cloudformation describe-stacks \
         --stack-name $STACK_NAME \
         --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" \
