@@ -4,10 +4,14 @@ set -eu
 
 STACK_NAME='GenerativeAiUseCasesStack'
 
-extract_value() {
+# Ubuntu独自の部分
+# extract_value() {
+#     echo $1 | jq -r ".Stacks[0].Outputs[] | select(.OutputKey==\"$2\") | .OutputValue"
+# }
+
+function extract_value {
     echo $1 | jq -r ".Stacks[0].Outputs[] | select(.OutputKey==\"$2\") | .OutputValue"
 }
-
 stack_output=`aws cloudformation describe-stacks --stack-name $STACK_NAME --output json`
 
 export VITE_APP_API_ENDPOINT=`extract_value "$stack_output" 'ApiEndpoint'`
