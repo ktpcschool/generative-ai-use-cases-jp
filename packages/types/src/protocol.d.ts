@@ -62,8 +62,9 @@ export type PredictRequest = {
 export type PredictResponse = string;
 
 export type PredictTitleRequest = {
+  model: Model;
   chat: Chat;
-  messages: UnrecordedMessage[];
+  prompt: string;
 };
 
 export type PredictTitleResponse = string;
@@ -125,6 +126,98 @@ export type WebTextResponse = {
   text: string;
 };
 
+export type GetTemplatesByUserRequest = {
+};
+
+export type Template = {
+  id: string;
+  templateid: string;
+  title: string;
+  prompt: string;
+  public: boolean;
+  usermailaddress: string;
+  tags: Record<string, string>;
+  createdDate: string;
+  copycount: number;
+  gsi_pk: string;
+  gsi_sk: string;
+};
+
+export type GetTemplatesByUserResponse = {
+  items: Template[],
+  LastEvaluatedKey: {
+    [key: string]: string;
+  };
+}
+
+export type CreateTemplateRequest = {
+  title: string;
+  prompt: string;
+  public: boolean;
+  tags: string[];
+}
+
+export type CreateTemplateResponse = {
+  recordedTemplate: Template;
+}
+
+export type UpdateTemplateRequest = {
+  id: string;
+  templateid: string;
+  title: string;
+  prompt: string;
+  public: boolean;
+  tags: string[];
+}
+
+export type UpdateTemplateResponse = {
+  response: string;
+}
+
+export type DeleteTemplateRequest = {
+  id: string;
+}
+
+export type DeleteTemplateResponse = {
+  response: string;
+}
+
+export type Tag = {
+  tagname: string;
+  tagid: string;
+  gsi_pk: string;
+  gsi_sk: number;
+};
+
+
+export type GetTagsResponse = {
+  items: Tag[],
+  LastEvaluatedKey: {
+    [key: string]: string;
+  };
+}
+
+export type GetTagDetailResponse = Tag;
+
+export type GetTemplatesByTagRequest = {
+  tagid: string,
+  sortBy: 'createdDate' | 'copycount',
+  LastEvaluatedKey?: string,
+};
+
+export type GetTemplatesByTagResponse = {
+  items: Template[],
+  LastEvaluatedKey?: {
+    [key: string]: string;
+  };
+};
+
+export type GetTemplateDetailResponse = Template;
+
+export type IncrementTemplateCopycountResponse = {
+  response: string;
+}
+
 export type CreateShareIdResponse = {
   shareId: ShareId;
   userIdAndChatId: UserIdAndChatId;
@@ -135,4 +228,22 @@ export type FindShareIdResponse = ShareId;
 export type GetSharedChatResponse = {
   chat: Chat;
   messages: RecordedMessage[];
+};
+
+export type GetFileUploadSignedUrlRequest = {
+  mediaFormat: string;
+};
+
+export type GetFileUploadSignedUrlResponse = string;
+
+export type UploadFileRequest = {
+  file: File;
+};
+
+export type RecognizeFileRequest = {
+  fileUrl: string;
+};
+
+export type RecognizeFileResponse = {
+  text: string;
 };

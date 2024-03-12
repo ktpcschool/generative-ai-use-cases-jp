@@ -7,6 +7,12 @@ const modelIds: string[] = JSON.parse(import.meta.env.VITE_APP_MODEL_IDS)
   .map((name: string) => name.trim())
   .filter((name: string) => name);
 
+const multiModalModelIds: string[] = JSON.parse(
+  import.meta.env.VITE_APP_MULTI_MODAL_MODEL_IDS
+)
+  .map((name: string) => name.trim())
+  .filter((name: string) => name);
+
 const endpointNames: string[] = JSON.parse(
   import.meta.env.VITE_APP_ENDPOINT_NAMES
 )
@@ -41,9 +47,16 @@ const agentModels = [
   ),
 ];
 
+export const findModelByModelId = (modelId: string) => {
+  return [...textModels, ...imageGenModels, ...agentModels].find(
+    (m) => m.modelId === modelId
+  );
+};
+
 export const MODELS = {
   modelRegion: modelRegion,
   modelIds: modelIds,
+  multiModalModelIds: multiModalModelIds,
   imageGenModelIds: imageGenModelIds,
   agentNames: agentNames,
   textModels: textModels,
