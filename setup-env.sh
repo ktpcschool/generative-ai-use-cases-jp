@@ -4,7 +4,7 @@ set -eu
 
 STACK_NAME='GenerativeAiUseCasesStack'
 
-function extract_value {
+extract_value() {
     echo $1 | jq -r ".Stacks[0].Outputs[] | select(.OutputKey==\"$2\") | .OutputValue"
 }
 
