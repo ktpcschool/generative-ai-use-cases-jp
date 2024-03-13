@@ -1,5 +1,5 @@
-import { Fragment, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Fragment, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import Button from '../components/Button';
 import { useImperativeHandle, forwardRef } from 'react';
 import {
@@ -14,7 +14,9 @@ export interface UpdateModalWindowHandle {
 }
 
 // モーダルウィンドウの定義、および、開閉関数の定義
-const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { updateTemplateAndReload: (newTemplate: UpdateTemplateRequest) => Promise<UpdateTemplateResponse> }>((props, ref) => {
+const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
+  updateTemplateAndReload: (newTemplate: UpdateTemplateRequest) => Promise<UpdateTemplateResponse>
+}>((props, ref) => {
   // 呼び出し元の画面へ公開する関数
   useImperativeHandle(ref, () => ({
     // template の値を受け取って画面に入力して、モーダルウィンドウを開く
@@ -26,32 +28,61 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
       setTitle(template.title);
       setPrompt(template.prompt);
       setShareSetting(template.public ? 'public' : 'private');
-      
-      // タキヒヨー様専用の実装。「デザイナー」「営業」「マーチャンダイザー」のタグは特別な値となっていて、「タグ」として表示するではなく「主な利用ユーザー」欄で表示する。
-      // そのため、template.tags から、「デザイナー」「営業」「マーチャンダイザー」の文字で検索して、引っかかったら「主な利用ユーザー」として表示させることをしている。
-      // 同様に、template.tags から、「デザイナー」「営業」「マーチャンダイザー」のタグを削除することも行う。
-      const predefinedUseCases = ['デザイナー', '営業', 'マーチャンダイザー'];
+
+      // タキヒヨー様専用の実装。「デザイナー」「営業」「マーチャンダイザー」等のタグは特別な値となっていて、「タグ」として表示するではなく「主な利用ユーザー」欄で表示する。
+      // そのため、template.tags から、「デザイナー」「営業」「マーチャンダイザー」等の文字で検索して、引っかかったら「主な利用ユーザー」として表示させることをしている。
+      // 同様に、template.tags から、「デザイナー」「営業」「マーチャンダイザー」等のタグを削除することも行う。
+      const predefinedUseCases = [
+        'デザイナー',
+        '営業',
+        'マーチャンダイザー',
+        'ガーメントグループ',
+        '素材開発／販売グループ',
+        'グローバルブランドグループ',
+        'マテリアルグループ',
+        'ライフスタイルグループ',
+        '経営企画セクション',
+        '物流セクション',
+        '業務監査セクション',
+        '法務・コンプライアンスセクション',
+        'システムセクション',
+        '人材開発セクション',
+        '総務セクション',
+        '経理セクション',
+        '広報・IRセクション',
+        '営業サポートセクション',
+        'QC管理グループ',
+        '営業マネジメント',
+        'スタッフマネジメント',
+        '企画（MD）',
+        'デザイナー',
+        '生産',
+        'DB',
+        '販売（営業）',
+        'EC',
+        'エンジニア',
+      ];
       const foundUseCase = Object.values(template.tags).find(value => predefinedUseCases.includes(value));
       const filteredTags = Object.values(template.tags).filter(tag => !predefinedUseCases.includes(tag));
 
       setUseCase(foundUseCase || '');
       setTagsInputs(filteredTags);
-    }
+    },
   }));
 
   // Update 対象の Template の情報を一時的に保存する State
-  let template: TemplateType = {
-    id: "",
-    templateid: "",
-    title: "",
-    prompt: "",
+  const template: TemplateType = {
+    id: '',
+    templateid: '',
+    title: '',
+    prompt: '',
     public: false,
-    usermailaddress: "",
+    usermailaddress: '',
     tags: {},
-    createdDate: "",
+    createdDate: '',
     copycount: 0,
-    gsi_pk: "",
-    gsi_sk: "",
+    gsi_pk: '',
+    gsi_sk: '',
   };
 
   const [targetTemplate, setTargetTemplate] = useState(template);
@@ -77,7 +108,7 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
   // TemplateCreate API を実行中の場合は画面上でスピンを回すための State
   const [isCreating, setIsCreating] = useState(false);
 
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
 
   // タイトルとプロンプトと公開設定が入力された状態を判定し、全て正常であれば「作成ボタン」を押下可能と判断する。
   const isFormValid = () => {
@@ -115,17 +146,18 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
       prompt: prompt,
       public: shareSetting === 'public', // 公開設定が 'public' の場合は true, それ以外は false
       tags: tags,
-    }
+    };
 
     // UpdateTemplate の API を実行
     await props.updateTemplateAndReload(updateTemplateRequest);
 
     setIsCreating(false);
-  }
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
+      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef}
+              onClose={setOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -135,11 +167,13 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div
+            className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div
+            className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -149,11 +183,14 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all mx-8 sm:my-8 w-full xl:max-w-7xl">
+              <Dialog.Panel
+                className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all mx-8 sm:my-8 w-full xl:max-w-7xl">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:ml-0 sm:mt-0 sm:text-left">
-                      <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                    <div
+                      className="mt-3 text-center sm:ml-0 sm:mt-0 sm:text-left">
+                      <Dialog.Title as="h3"
+                                    className="text-base font-semibold leading-6 text-gray-900">
                         テンプレート編集
                       </Dialog.Title>
                     </div>
@@ -164,9 +201,11 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                   <form onSubmit={(e) => e.preventDefault()}>
                     <div className="space-y-12">
                       <div className="border-b border-gray-900/10 pb-12">
-                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div
+                          className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                           <div className="col-span-full">
-                            <label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="title"
+                                   className="block text-sm font-medium leading-6 text-gray-900">
                               タイトル
                             </label>
                             <div className="mt-2">
@@ -184,7 +223,8 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                           </div>
 
                           <div className="col-span-full">
-                            <label htmlFor="prompt" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="prompt"
+                                   className="block text-sm font-medium leading-6 text-gray-900">
                               プロンプト
                             </label>
                             <div className="mt-2">
@@ -201,19 +241,24 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                           </div>
 
                           <fieldset className="col-span-full">
-                            <legend className="text-sm font-semibold leading-6 text-gray-900">公開設定</legend>
-                            <p className="mt-1 text-sm leading-6 text-gray-600"></p>
+                            <legend
+                              className="text-sm font-semibold leading-6 text-gray-900">公開設定
+                            </legend>
+                            <p
+                              className="mt-1 text-sm leading-6 text-gray-600"></p>
                             <div className="mt-6 space-y-6">
                               <div className="flex items-center gap-x-3">
                                 <input
                                   id="private"
                                   name="template-share"
                                   type="radio"
-                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" value="private"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                  value="private"
                                   onChange={(e) => setShareSetting(e.target.value)}
                                   checked={shareSetting === 'private'}
                                 />
-                                <label htmlFor="private" className="block text-sm font-medium leading-6 text-gray-900">
+                                <label htmlFor="private"
+                                       className="block text-sm font-medium leading-6 text-gray-900">
                                   非公開
                                 </label>
                               </div>
@@ -227,7 +272,8 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                                   onChange={(e) => setShareSetting(e.target.value)}
                                   checked={shareSetting === 'public'}
                                 />
-                                <label htmlFor="public" className="block text-sm font-medium leading-6 text-gray-900">
+                                <label htmlFor="public"
+                                       className="block text-sm font-medium leading-6 text-gray-900">
                                   公開
                                 </label>
                               </div>
@@ -235,7 +281,8 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                           </fieldset>
 
                           <div className="col-span-full">
-                            <label htmlFor="usecase" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="usecase"
+                                   className="block text-sm font-medium leading-6 text-gray-900">
                               主な利用ユーザー
                             </label>
                             <div className="mt-2">
@@ -248,15 +295,99 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                                 onChange={(e) => setUseCase(e.target.value)}
                                 disabled={shareSetting === 'private'}
                               >
-                                <option value="">指定なし</option>
-                                <option value="デザイナー">デザイナー</option>
-                                <option value="営業">営業</option>
-                                <option value="マーチャンダイザー">マーチャンダイザー</option>
+                                <option
+                                  value="">指定なし
+                                </option>
+                                <option
+                                  value="デザイナー">デザイナー
+                                </option>
+                                <option
+                                  value="営業">営業
+                                </option>
+                                <option
+                                  value="マーチャンダイザー">マーチャンダイザー
+                                </option>
+                                <option
+                                  value="ガーメントグループ">ガーメントグループ
+                                </option>
+                                <option
+                                  value="素材開発／販売グループ">素材開発／販売グループ
+                                </option>
+                                <option
+                                  value="グローバルブランドグループ">グローバルブランドグループ
+                                </option>
+                                <option
+                                  value="マテリアルグループ">マテリアルグループ
+                                </option>
+                                <option
+                                  value="ライフスタイルグループ">ライフスタイルグループ
+                                </option>
+                                <option
+                                  value="経営企画セクション">経営企画セクション
+                                </option>
+                                <option
+                                  value="物流セクション">物流セクション
+                                </option>
+                                <option
+                                  value="業務監査セクション">業務監査セクション
+                                </option>
+                                <option
+                                  value="法務・コンプライアンスセクション">法務・コンプライアンスセクション
+                                </option>
+                                <option
+                                  value="システムセクション">システムセクション
+                                </option>
+                                <option
+                                  value="人材開発セクション">人材開発セクション
+                                </option>
+                                <option
+                                  value="総務セクション">総務セクション
+                                </option>
+                                <option
+                                  value="経理セクション">経理セクション
+                                </option>
+                                <option
+                                  value="広報・IRセクション">広報・IRセクション
+                                </option>
+                                <option
+                                  value="営業サポートセクション">営業サポートセクション
+                                </option>
+                                <option
+                                  value="QC管理グループ">QC管理グループ
+                                </option>
+                                <option
+                                  value="営業マネジメント">営業マネジメント
+                                </option>
+                                <option
+                                  value="スタッフマネジメント">スタッフマネジメント
+                                </option>
+                                <option
+                                  value="企画（MD）">企画（MD）
+                                </option>
+                                <option
+                                  value="デザイナー">デザイナー
+                                </option>
+                                <option
+                                  value="生産">生産
+                                </option>
+                                <option
+                                  value="DB">DB
+                                </option>
+                                <option
+                                  value="販売（営業）">販売（営業）
+                                </option>
+                                <option
+                                  value="EC">EC
+                                </option>
+                                <option
+                                  value="エンジニア">エンジニア
+                                </option>
                               </select>
                             </div>
                           </div>
                           <div className="col-span-full">
-                            <label htmlFor="tags" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="tags"
+                                   className="block text-sm font-medium leading-6 text-gray-900">
                               タグ (上限 5 個)
                             </label>
                             <div className="mt-2">
@@ -328,7 +459,8 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
                   >
                     {
                       isCreating ? (
-                        <div className="h-5 w-5 animate-spin rounded-full border-4 border-t-transparent"></div>
+                        <div
+                          className="h-5 w-5 animate-spin rounded-full border-4 border-t-transparent"></div>
                       ) : (
                         '更新'
                       )
@@ -341,7 +473,7 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, { upda
         </div>
       </Dialog>
     </Transition.Root>
-  )
-})
+  );
+});
 
 export default ModalWindowsForUpdateTemplate;
