@@ -67,6 +67,36 @@ async function getAndGenerateTagIds(tags: string[]): Promise<Record<string, stri
 async function updateTemplateCount(taglist: Record<string, string>): Promise<void> {
     const templateTableName = process.env.TEMPLATE_TABLE_NAME;
     const tagTableName = process.env.TAG_TABLE_NAME;
+    const tagList = [
+            '営業',
+            'デザイナー',
+            'マーチャンダイザー',
+            'ガーメントグループ',
+            '素材開発／販売グループ',
+            'グローバルブランドグループ',
+            'マテリアルグループ',
+            'ライフスタイルグループ',
+            '経営企画セクション',
+            '物流セクション',
+            '業務監査セクション',
+            '法務・コンプライアンスセクション',
+            'システムセクション',
+            '人材開発セクション',
+            '総務セクション',
+            '経理セクション',
+            '広報・IRセクション',
+            '営業サポートセクション',
+            'QC管理グループ',
+            '営業マネジメント',
+            'スタッフマネジメント',
+            '企画（MD）',
+            'デザイナー',
+            '生産',
+            'DB',
+            '販売（営業）',
+            'EC',
+            'エンジニア'
+        ];
 
     // タグに紐づくテンプレートが完全に 0 件になったときに、そのタグを削除する。
     // 営業, デザイナー, マーチャンダイザー は除外
@@ -82,7 +112,7 @@ async function updateTemplateCount(taglist: Record<string, string>): Promise<voi
 
         const queryResult = await dynamoDb.send(queryCommand);
 
-        if (tagName === '営業' || tagName === 'デザイナー' || tagName === 'マーチャンダイザー') {
+        if (tagList.includes(tagName) && queryResult.Items) {
             // タグテーブルの templateCount (gsi_sk) を減らす
             const updateCommand = new UpdateCommand({
                 TableName: tagTableName,
