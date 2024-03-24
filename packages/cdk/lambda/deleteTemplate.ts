@@ -75,8 +75,35 @@ async function deleteTemplate(templateid: string): Promise<boolean> {
         });
 
         const queryResult = await dynamoDb.send(queryCommand);
+        const tagList = [
+            'ガーメントグループ',
+            '素材開発／販売グループ',
+            'グローバルブランドグループ',
+            'マテリアルグループ',
+            'ライフスタイルグループ',
+            '経営企画セクション',
+            '物流セクション',
+            '業務監査セクション',
+            '法務・コンプライアンスセクション',
+            'システムセクション',
+            '人材開発セクション',
+            '総務セクション',
+            '経理セクション',
+            '広報・IRセクション',
+            '営業サポートセクション',
+            'QC管理グループ',
+            '営業マネジメント',
+            'スタッフマネジメント',
+            '企画（MD）',
+            'デザイナー',
+            '生産',
+            'DB',
+            '販売（営業）',
+            'EC',
+            'エンジニア'
+        ];
 
-        if (tagName === '営業' || tagName === 'デザイナー' || tagName === 'マーチャンダイザー') {
+        if (typeof tagName === 'string' && tagList.includes(tagName) && queryResult.Items) {
             // タグテーブルの templateCount (gsi_sk) を減らす
             const updateCommand = new UpdateCommand({
                 TableName: tagTableName,
