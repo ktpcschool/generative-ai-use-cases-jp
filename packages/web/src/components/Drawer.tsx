@@ -147,46 +147,48 @@ const Drawer: React.FC<Props> = (props) => {
           ))}
         </div>
         <div className="border-b" />
-        {templates.length > 0 && (
-          <>
-            <ExpandableMenu
-              title="業務テンプレート"
-              defaultOpened={true}
-              className="mx-3 my-2 text-xs">
-              <div className="mb-2 ml-2 mr-1">
-                {templates.map((item, idx) => (
-                  <Item
-                    key={idx}
-                    label={item.label}
-                    icon={item.icon}
-                    to={item.to}
-                    display={item.display}
-                  />
-                ))}
-              </div>
-            </ExpandableMenu>
-          </>
-        )}
-        {templatesSec.length > 0 && (
-          <>
-            <ExpandableMenu
-              title="所属テンプレート"
-              defaultOpened={true}
-              className="mx-3 my-2 text-xs">
-              <div className="mb-2 ml-2 mr-1">
-                {templatesSec.map((item, idx) => (
-                  <Item
-                    key={idx}
-                    label={item.label}
-                    icon={item.icon}
-                    to={item.to}
-                    display={item.display}
-                  />
-                ))}
-              </div>
-            </ExpandableMenu>
-          </>
-        )}
+        <div className="scrollbar-thin scrollbar-thumb-white ml-2 mr-1 h-full overflow-y-auto">
+          {templates.length > 0 && (
+            <>
+              <ExpandableMenu
+                title="業務テンプレート"
+                defaultOpened={true}
+                className="mx-3 my-2 text-xs">
+                <div className="mb-2 ml-2 mr-1">
+                  {templates.map((item, idx) => (
+                    <Item
+                      key={idx}
+                      label={item.label}
+                      icon={item.icon}
+                      to={item.to}
+                      display={item.display}
+                    />
+                  ))}
+                </div>
+              </ExpandableMenu>
+            </>
+          )}
+          {templatesSec.length > 0 && (
+            <>
+              <ExpandableMenu
+                title="所属テンプレート"
+                defaultOpened={true}
+                className="mx-3 my-2 text-xs">
+                <div className="mb-2 ml-2 mr-1">
+                  {templatesSec.map((item, idx) => (
+                    <Item
+                      key={idx}
+                      label={item.label}
+                      icon={item.icon}
+                      to={item.to}
+                      display={item.display}
+                    />
+                  ))}
+                </div>
+              </ExpandableMenu>
+            </>
+          )}
+        </div>
         <div className="border-b" />
         {tools.length > 0 && (
           <>
