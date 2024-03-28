@@ -27,6 +27,7 @@ interface GenerativeAiUseCasesStackProps extends StackProps {
   allowedIpV4AddressRanges: string[] | null;
   allowedIpV6AddressRanges: string[] | null;
   allowedCountryCodes: string[] | null;
+  vpcId?: string;
 }
 
 export class GenerativeAiUseCasesStack extends Stack {
@@ -164,6 +165,7 @@ export class GenerativeAiUseCasesStack extends Stack {
         userPool: auth.userPool,
         api: api.api,
         fileBucket: file.fielBucket,
+        vpcId: props.vpcId,
       });
     }
 
