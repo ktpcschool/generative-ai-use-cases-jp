@@ -216,6 +216,7 @@ const LandingPage: React.FC = () => {
 - フィラーワードを除去してください。
 - 文字起こしの誤認識と思われる内容は正しい内容に書き換えてください。
 - 接続詞などが省略されている場合は、読みやすいように補完してください。
+- 質疑応答も省略せず、記載してください。
 </rules>`,
           },
           information: {
@@ -279,7 +280,7 @@ const LandingPage: React.FC = () => {
             label="Agent チャット"
             onClickDemo={demoAgent}
             icon={<PiRobot />}
-            description="RAG (Retrieval Augmented Generation) は、情報の検索と LLM の文章生成を組み合わせる手法のことで、効果的な情報アクセスを実現できます。Amazon Kendra から取得した参考ドキュメントをベースに LLM が回答を生成してくれるため、「社内情報に対応した LLM チャット」を簡単に実現することが可能です。"
+            description="Agent チャットユースケースでは Agent for Amazon Bedrock を利用してアクションを実行させたり、Knowledge base for Amazon Bedrock のベクトルデータベースを参照することが可能です。"
           />
         )}
         <CardDemo
