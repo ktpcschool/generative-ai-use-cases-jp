@@ -106,7 +106,7 @@ if (typeof vpcId == 'string' && !vpcId.match(/^vpc-/)) {
 
 const generativeAiUseCasesStack = new GenerativeAiUseCasesStack(
   app,
-  'GenerativeAiUseCasesStack',
+  'GenerativeAiUseCasesStackWatanabe',
   {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT,

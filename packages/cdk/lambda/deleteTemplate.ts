@@ -76,12 +76,6 @@ async function deleteTemplate(templateid: string): Promise<boolean> {
 
         const queryResult = await dynamoDb.send(queryCommand);
         const tagList = [
-<<<<<<< HEAD
-            '営業',
-            'デザイナー',
-            'マーチャンダイザー',
-=======
->>>>>>> 67f34c699a5d573b381342599601e0c56984c302
             'ガーメントグループ',
             '素材開発／販売グループ',
             'グローバルブランドグループ',

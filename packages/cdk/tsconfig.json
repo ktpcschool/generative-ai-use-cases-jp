@@ -21,7 +21,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": [
-      "./node_modules/@types"
+      "/home/watanabe/Takihyo/generative-ai-use-cases-jp/node_modules/@types"
     ],
     "types": [
       "node"
