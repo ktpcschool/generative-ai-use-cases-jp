@@ -28,6 +28,7 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
       setTitle(template.title);
       setPrompt(template.prompt);
       setShareSetting(template.public ? 'public' : 'private');
+<<<<<<< HEAD
 
       // タキヒヨー様専用の実装。「デザイナー」「営業」「マーチャンダイザー」等のタグは特別な値となっていて、「タグ」として表示するではなく「主な利用ユーザー」欄で表示する。
       // そのため、template.tags から、「デザイナー」「営業」「マーチャンダイザー」等の文字で検索して、引っかかったら「主な利用ユーザー」として表示させることをしている。
@@ -36,6 +37,13 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
         'デザイナー',
         '営業',
         'マーチャンダイザー',
+=======
+      
+      // タキヒヨー様専用の実装。「デザイナー」「営業」「マーチャンダイザー」のタグは特別な値となっていて、「タグ」として表示するではなく「主な利用ユーザー」欄で表示する。
+      // そのため、template.tags から、「デザイナー」「営業」「マーチャンダイザー」の文字で検索して、引っかかったら「主な利用ユーザー」として表示させることをしている。
+      // 同様に、template.tags から、「デザイナー」「営業」「マーチャンダイザー」のタグを削除することも行う。
+      const predefinedUseCases = [
+>>>>>>> 67f34c699a5d573b381342599601e0c56984c302
         'ガーメントグループ',
         '素材開発／販売グループ',
         'グローバルブランドグループ',
@@ -60,7 +68,11 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
         'DB',
         '販売（営業）',
         'EC',
+<<<<<<< HEAD
         'エンジニア',
+=======
+        'エンジニア'
+>>>>>>> 67f34c699a5d573b381342599601e0c56984c302
       ];
       const foundUseCase = Object.values(template.tags).find(value => predefinedUseCases.includes(value));
       const filteredTags = Object.values(template.tags).filter(tag => !predefinedUseCases.includes(tag));
@@ -72,10 +84,17 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
 
   // Update 対象の Template の情報を一時的に保存する State
   const template: TemplateType = {
+<<<<<<< HEAD
     id: '',
     templateid: '',
     title: '',
     prompt: '',
+=======
+    id: "",
+    templateid: "",
+    title: "",
+    prompt: "",
+>>>>>>> 67f34c699a5d573b381342599601e0c56984c302
     public: false,
     usermailaddress: '',
     tags: {},
@@ -295,93 +314,32 @@ const ModalWindowsForUpdateTemplate = forwardRef<UpdateModalWindowHandle, {
                                 onChange={(e) => setUseCase(e.target.value)}
                                 disabled={shareSetting === 'private'}
                               >
-                                <option
-                                  value="">指定なし
-                                </option>
-                                <option
-                                  value="デザイナー">デザイナー
-                                </option>
-                                <option
-                                  value="営業">営業
-                                </option>
-                                <option
-                                  value="マーチャンダイザー">マーチャンダイザー
-                                </option>
-                                <option
-                                  value="ガーメントグループ">ガーメントグループ
-                                </option>
-                                <option
-                                  value="素材開発／販売グループ">素材開発／販売グループ
-                                </option>
-                                <option
-                                  value="グローバルブランドグループ">グローバルブランドグループ
-                                </option>
-                                <option
-                                  value="マテリアルグループ">マテリアルグループ
-                                </option>
-                                <option
-                                  value="ライフスタイルグループ">ライフスタイルグループ
-                                </option>
-                                <option
-                                  value="経営企画セクション">経営企画セクション
-                                </option>
-                                <option
-                                  value="物流セクション">物流セクション
-                                </option>
-                                <option
-                                  value="業務監査セクション">業務監査セクション
-                                </option>
-                                <option
-                                  value="法務・コンプライアンスセクション">法務・コンプライアンスセクション
-                                </option>
-                                <option
-                                  value="システムセクション">システムセクション
-                                </option>
-                                <option
-                                  value="人材開発セクション">人材開発セクション
-                                </option>
-                                <option
-                                  value="総務セクション">総務セクション
-                                </option>
-                                <option
-                                  value="経理セクション">経理セクション
-                                </option>
-                                <option
-                                  value="広報・IRセクション">広報・IRセクション
-                                </option>
-                                <option
-                                  value="営業サポートセクション">営業サポートセクション
-                                </option>
-                                <option
-                                  value="QC管理グループ">QC管理グループ
-                                </option>
-                                <option
-                                  value="営業マネジメント">営業マネジメント
-                                </option>
-                                <option
-                                  value="スタッフマネジメント">スタッフマネジメント
-                                </option>
-                                <option
-                                  value="企画（MD）">企画（MD）
-                                </option>
-                                <option
-                                  value="デザイナー">デザイナー
-                                </option>
-                                <option
-                                  value="生産">生産
-                                </option>
-                                <option
-                                  value="DB">DB
-                                </option>
-                                <option
-                                  value="販売（営業）">販売（営業）
-                                </option>
-                                <option
-                                  value="EC">EC
-                                </option>
-                                <option
-                                  value="エンジニア">エンジニア
-                                </option>
+                                <option value="">指定なし</option>
+                                <option value="ガーメントグループ">ガーメントグループ</option>
+                                <option value="素材開発／販売グループ">素材開発／販売グループ</option>
+                                <option value="グローバルブランドグループ">グローバルブランドグループ</option>
+                                <option value="マテリアルグループ">マテリアルグループ</option>
+                                <option value="ライフスタイルグループ">ライフスタイルグループ</option>
+                                <option value="経営企画セクション">経営企画セクション</option>
+                                <option value="物流セクション">物流セクション</option>
+                                <option value="業務監査セクション">業務監査セクション</option>
+                                <option value="法務・コンプライアンスセクション">法務・コンプライアンスセクション</option>
+                                <option value="システムセクション">システムセクション</option>
+                                <option value="人材開発セクション">人材開発セクション</option>
+                                <option value="総務セクション">総務セクション</option>
+                                <option value="経理セクション">経理セクション</option>
+                                <option value="広報・IRセクション">広報・IRセクション</option>
+                                <option value="営業サポートセクション">営業サポートセクション</option>
+                                <option value="QC管理グループ">QC管理グループ</option>
+                                <option value="営業マネジメント">営業マネジメント</option>
+                                <option value="スタッフマネジメント">スタッフマネジメント</option>
+                                <option value="企画（MD）">企画（MD）</option>
+                                <option value="デザイナー">デザイナー</option>
+                                <option value="生産">生産</option>
+                                <option value="DB">DB</option>
+                                <option value="販売（営業）">販売（営業）</option>
+                                <option value="EC">EC</option>
+                                <option value="エンジニア">エンジニア</option>
                               </select>
                             </div>
                           </div>

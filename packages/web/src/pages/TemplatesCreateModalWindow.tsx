@@ -212,9 +212,31 @@ const ModalWindowsForCreateTemplate = forwardRef<CreateModalWindowHandle, { crea
                                 disabled={shareSetting === 'private'}
                               >
                                 <option value="">指定なし</option>
+                                <option value="ガーメントグループ">ガーメントグループ</option>
+                                <option value="素材開発／販売グループ">素材開発／販売グループ</option>
+                                <option value="グローバルブランドグループ">グローバルブランドグループ</option>
+                                <option value="マテリアルグループ">マテリアルグループ</option>
+                                <option value="ライフスタイルグループ">ライフスタイルグループ</option>
+                                <option value="経営企画セクション">経営企画セクション</option>
+                                <option value="物流セクション">物流セクション</option>
+                                <option value="業務監査セクション">業務監査セクション</option>
+                                <option value="法務・コンプライアンスセクション">法務・コンプライアンスセクション</option>
+                                <option value="システムセクション">システムセクション</option>
+                                <option value="人材開発セクション">人材開発セクション</option>
+                                <option value="総務セクション">総務セクション</option>
+                                <option value="経理セクション">経理セクション</option>
+                                <option value="広報・IRセクション">広報・IRセクション</option>
+                                <option value="営業サポートセクション">営業サポートセクション</option>
+                                <option value="QC管理グループ">QC管理グループ</option>
+                                <option value="営業マネジメント">営業マネジメント</option>
+                                <option value="スタッフマネジメント">スタッフマネジメント</option>
+                                <option value="企画（MD）">企画（MD）</option>
                                 <option value="デザイナー">デザイナー</option>
-                                <option value="営業">営業</option>
-                                <option value="マーチャンダイザー">マーチャンダイザー</option>
+                                <option value="生産">生産</option>
+                                <option value="DB">DB</option>
+                                <option value="販売（営業）">販売（営業）</option>
+                                <option value="EC">EC</option>
+                                <option value="エンジニア">エンジニア</option>
                               </select>
                             </div>
                           </div>

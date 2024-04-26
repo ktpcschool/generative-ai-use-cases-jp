@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { BaseProps } from '../@types/common';
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { default as ReactMarkdown } from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
@@ -14,10 +14,8 @@ type Props = BaseProps & {
   prefix?: string;
 };
 
-const LinkRenderer: React.FC<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any
-> = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LinkRenderer = (props: any) => {
   // 現状、S3 からのファイルダウンロード機能は RAG チャットしか利用しない
   const { downloadDoc, isS3Url, downloading } = useRagFile();
   const isS3 = useMemo(() => {
@@ -64,27 +62,33 @@ const Markdown: React.FC<Props> = ({ className, prefix, children }) => {
       remarkRehypeOptions={{ clobberPrefix: prefix }}
       components={{
         a: LinkRenderer,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        code({ node, inline, className, children, ...props }) {
+        code({ className, children }) {
           const language = /language-(\w+)/.exec(className || '')?.[1];
-          const isCodeBlock = !inline && language;
+          const isCodeBlock = !!language;
           const codeText = String(children).replace(/\n$/, '');
 
           return (
             <>
-              <div className="flex">
-                <span className="flex-auto">{isCodeBlock ? language : ''}</span>
-                <ButtonCopy
-                  className="mr-2 justify-end text-gray-400"
-                  text={codeText} // クリップボードにコピーする対象として、SyntaxHighlighter に渡すソースコード部分を指定
-                />
-              </div>
-              <SyntaxHighlighter
-                {...props}
-                children={codeText}
-                style={vscDarkPlus}
-                language={isCodeBlock ? language : 'plaintext'}
-              />
+              {isCodeBlock ? (
+                <>
+                  <div className="flex">
+                    <span className="flex-auto">{language} </span>
+                    <ButtonCopy
+                      className="mr-2 justify-end text-gray-400"
+                      text={codeText} // クリップボードにコピーする対象として、SyntaxHighlighter に渡すソースコード部分を指定
+                    />
+                  </div>
+                  <SyntaxHighlighter
+                    children={codeText}
+                    style={vscDarkPlus}
+                    language={isCodeBlock ? language : 'plaintext'}
+                  />
+                </>
+              ) : (
+                <span className="bg-aws-squid-ink/10 border-aws-squid-ink/30 inline rounded-md border px-1 py-0.5">
+                  {codeText}
+                </span>
+              )}
             </>
           );
         },

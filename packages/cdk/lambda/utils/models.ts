@@ -68,7 +68,7 @@ const TITAN_TEXT_PROMPT: PromptTemplate = {
 };
 
 const LLAMA2_PROMPT: PromptTemplate = {
-  prefix: '[INST] ',
+  prefix: '<s>[INST] ',
   suffix: ' [/INST]',
   join: '',
   user: '{}',
@@ -78,12 +78,12 @@ const LLAMA2_PROMPT: PromptTemplate = {
 };
 
 const MISTRAL_PROMPT: PromptTemplate = {
-  prefix: '[INST] ',
+  prefix: '<s>[INST] ',
   suffix: ' [/INST]',
   join: '',
   user: '{}',
-  assistant: ' [/INST] {}</s><s>[INST] ',
-  system: '<<SYS>>\n{}\n<</SYS>>\n\n',
+  assistant: ' [/INST]\n{}\n[INST] ',
+  system: '{} [/INST]\nコンテキストを理解しました。</s>\n[INST] ',
   eosToken: '</s>',
 };
 
@@ -142,6 +142,7 @@ const MISTRAL_DEFAULT_PARAMS: MistralParams = {
   max_tokens: 1024,
   top_p: 0.99,
   temperature: 0.6,
+  stop: [MISTRAL_PROMPT.eosToken, '[INST]'],
 };
 
 // Model Config
@@ -322,6 +323,11 @@ export const BEDROCK_MODELS: {
     createBodyText: createBodyTextClaudeMessage,
     extractOutputText: extractOutputTextClaudeMessage,
   },
+  'anthropic.claude-3-haiku-20240307-v1:0': {
+    promptTemplate: CLAUDEV21_PROMPT,
+    createBodyText: createBodyTextClaudeMessage,
+    extractOutputText: extractOutputTextClaudeMessage,
+  },
   'anthropic.claude-v2:1': {
     promptTemplate: CLAUDEV21_PROMPT,
     createBodyText: createBodyTextClaudev21,
@@ -358,6 +364,11 @@ export const BEDROCK_MODELS: {
     extractOutputText: extractOutputTextMistral,
   },
   'mistral.mixtral-8x7b-instruct-v0:1': {
+    promptTemplate: MISTRAL_PROMPT,
+    createBodyText: createBodyTextMistral,
+    extractOutputText: extractOutputTextMistral,
+  },
+  'mistral.mistral-large-2402-v1:0': {
     promptTemplate: MISTRAL_PROMPT,
     createBodyText: createBodyTextMistral,
     extractOutputText: extractOutputTextMistral,

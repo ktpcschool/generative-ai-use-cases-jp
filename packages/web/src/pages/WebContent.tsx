@@ -96,6 +96,7 @@ const WebContent: React.FC = () => {
     messages,
     postChat,
     clear: clearChat,
+    updateSystemContextByModel,
   } = useChat(pathname);
   const { setTypingTextInput, typingTextOutput } = useTyping(loading);
   const { getWebText } = useChatApi();
@@ -105,6 +106,11 @@ const WebContent: React.FC = () => {
   const prompter = useMemo(() => {
     return getPrompter(modelId);
   }, [modelId]);
+
+  useEffect(() => {
+    updateSystemContextByModel();
+    // eslint-disable-next-line  react-hooks/exhaustive-deps
+  }, [prompter]);
 
   const disabledExec = useMemo(() => {
     return url === '' || loading || fetching;
@@ -262,12 +268,12 @@ const WebContent: React.FC = () => {
 
           <div className="mt-2 rounded border border-black/30 p-1.5">
             <Markdown>{typingTextOutput}</Markdown>
-            {!loading && content === '' && (
+            {!loading && !fetching && content === '' && (
               <div className="text-gray-500">
                 抽出された文章がここに表示されます
               </div>
             )}
-            {loading && (
+            {(loading || fetching) && (
               <div className="border-aws-sky size-5 animate-spin rounded-full border-4 border-t-transparent"></div>
             )}
             <div className="flex w-full justify-end">

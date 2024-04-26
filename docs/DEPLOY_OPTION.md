@@ -159,20 +159,46 @@ Knowledge base プロンプト例: キーワードで検索し情報を取得し
 }
 ```
 
+### 映像分析ユースケースの有効化
+
+映像分析ユースケースでは、映像の画像フレームとテキストを入力して画像の内容を LLM に分析させます。
+映像分析ユースケースを直接有効化するオプションはありませんが、`cdk.json` でマルチモーダルのモデルが有効化されている必要があります。
+
+2024/03 現在、マルチモーダルのモデルは以下です。
+
+```
+"anthropic.claude-3-sonnet-20240229-v1:0",
+"anthropic.claude-3-haiku-20240307-v1:0",
+```
+
+これらのいずれかが `cdk.json` の `modelIds` に定義されている必要があります。
+
+```json
+  "modelIds": [
+    "anthropic.claude-3-haiku-20240307-v1:0",
+    "anthropic.claude-3-sonnet-20240229-v1:0"
+  ]
+```
+
+> 2024/03 時点での情報: 上記の通り Claude 3 を利用する必要があるため、modelRegion が ap-northeast-1 の場合は映像分析ユースケースを利用できません。Claude 3 が利用可能なリージョン (us-east-1 や us-west-2 など) をご利用ください。
+
 ## Amazon Bedrock のモデルを変更する
 
-`cdk.json` の `modelRegion`, `modelIds`, `imageGenerationModelIds` でモデルとモデルのリージョンを指定します。`modelIds` と `imageGenerationModelIds` は指定したリージョンで利用できるモデルの中から利用したいモデルのリストで指定してください。モデルの一覧は[ドキュメント](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids-arns.html) をご確認ください。
+`cdk.json` の `modelRegion`, `modelIds`, `imageGenerationModelIds` でモデルとモデルのリージョンを指定します。`modelIds` と `imageGenerationModelIds` は指定したリージョンで利用できるモデルの中から利用したいモデルのリストで指定してください。AWS ドキュメントに、[モデルの一覧](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)と[リージョン別のモデルサポート一覧](https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html)があります。
 
 現状このソリューションが対応しているモデルは以下です
 
 ```
 "anthropic.claude-3-sonnet-20240229-v1:0",
+"anthropic.claude-3-haiku-20240307-v1:0",
 "anthropic.claude-v2",
+"anthropic.claude-v2:1",
 "anthropic.claude-instant-v1",
 "meta.llama2-13b-chat-v1",
 "meta.llama2-70b-chat-v1",
 "mistral.mistral-7b-instruct-v0:2",
 "mistral.mixtral-8x7b-instruct-v0:1",
+"mistral.mistral-large-2402-v1:0",
 ```
 
 **指定したリージョンで指定したモデルが有効化されているかご確認ください。**
@@ -183,8 +209,9 @@ Knowledge base プロンプト例: キーワードで検索し情報を取得し
   "modelRegion": "us-east-1",
   "modelIds": [
     "anthropic.claude-3-sonnet-20240229-v1:0",
-    "anthropic.claude-v2",
-    "anthropic.claude-instant-v1",
+    "anthropic.claude-3-haiku-20240307-v1:0",
+    "anthropic.claude-v2:1",
+    "anthropic.claude-instant-v1"
   ],
   "imageGenerationModelIds": [
     "stability.stable-diffusion-xl-v1",
@@ -196,7 +223,10 @@ Knowledge base プロンプト例: キーワードで検索し情報を取得し
 
 ```bash
   "modelRegion": "ap-northeast-1",
-  "modelIds": ["anthropic.claude-instant-v1"],
+  "modelIds": [
+    "anthropic.claude-v2:1",
+    "anthropic.claude-instant-v1"
+  ],
   "imageGenerationModelIds": [],
 ```
 
@@ -314,8 +344,9 @@ npx -w packages/cdk cdk bootstrap --region us-east-1
 
 ### SAML 認証
 
-Microsoft Entra ID (旧 Azure Active Directory) などの IdP が提供する SAML 認証機能と連携ができます。  
-[こちらに Microsoft Entra ID と SAML 設定を行う参考手順](SAML_WITH_ENTRA_ID.md) があります。Microsoft Entra ID の設定を含めた詳細な手順があるので、こちらもご活用ください。
+Google Workspace や Microsoft Entra ID (旧 Azure Active Directory) などの IdP が提供する SAML 認証機能と連携ができます。次に詳細な連携手順があります。こちらもご活用ください。  
+- [Google Workspace と SAML 連携](SAML_WITH_GOOGLE_WORKSPACE.md)
+- [Microsoft Entra ID と SAML 連携](SAML_WITH_ENTRA_ID.md)
 
 **[packages/cdk/cdk.json](/packages/cdk/cdk.json) を編集**
 
@@ -357,12 +388,49 @@ context の `dashboard` に `true` を設定します。(デフォルトは `fal
 PDF や Excel などのファイルをアップロードしてテキストを抽出する、ファイルアップロード機能を利用することができます。対応しているファイルは、csv, doc, docx, md, pdf, ppt, pptx, tsv, xlsx です。
 
 **[packages/cdk/cdk.json](/packages/cdk/cdk.json) を編集**
-```
+```json
 {
   "context": {
-    "recognizeFileEnabled": true
+    "recognizeFileEnabled": true,
+    "vpcId": null
   }
 }
 ```
 
-ファイルアップロード機能は ECS (Fargate) 上で実行されます。そのため、有効化すると VPC が新たに作成されます。また、Fargate 上で動くコンテナのビルドを行うために、デプロイ用のマシンでは Docker がインストールされている必要があり、Docker デーモンが起動している必要があります。
+ファイルアップロード機能は ECS (Fargate) 上で実行されます。`vpcId`を指定しない場合は、VPC が新たに作成されます。また、Fargate 上で動くコンテナのビルドを行うために、デプロイ用のマシンでは Docker がインストールされている必要があり、Docker デーモンが起動している必要があります。
+
+既存の VPC を使用する場合は、`vpcId` を指定してください。
+
+
+```json
+{
+  "context": {
+    "recognizeFileEnabled": true,
+    "vpcId": "vpc-xxxxxxxxxxxxxxxxx"
+  }
+}
+```
+
+## カスタムドメインの使用
+
+Web サイトの URL としてカスタムドメインを使用することができます。同一 AWS アカウントの Route53 にパブリックホストゾーンが作成済みであることが必要です。パブリックホストゾーンについてはこちらをご参照ください: [パブリックホストゾーンの使用 - Amazon Route 53](https://docs.aws.amazon.com/ja_jp/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html)
+
+同一 AWS アカウントにパブリックホストゾーンを持っていない場合は、AWS ACM による SSL 証明書の検証時に手動で DNS レコードを追加する方法や、Eメール検証を行う方法もあります。これらの方法を利用する場合は、CDK のドキュメントを参照してカスタマイズしてください: [aws-cdk-lib.aws_certificatemanager module · AWS CDK](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_certificatemanager-readme.html)
+
+cdk.json には以下の値を設定します。
+
+- `hostName` ... Web サイトのホスト名です。A レコードは CDK によって作成されます。事前に作成する必要はありません
+- `domainName` ... 事前に作成したパブリックホストゾーンのドメイン名です
+- `hostedZoneId` ... 事前に作成したパブリックホストゾーンのIDです
+
+**[packages/cdk/cdk.json](/packages/cdk/cdk.json) を編集**
+
+```json
+{
+  "context": {
+    "hostName": "genai",
+    "domainName": "example.com",
+    "hostedZoneId": "XXXXXXXXXXXXXXXXXXXX"
+  }
+}
+```

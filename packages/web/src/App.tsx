@@ -19,6 +19,7 @@ import {
   PiChatCenteredTextThin,
   PiRobot,
   PiUploadSimple,
+  PiVideoCamera,
 } from 'react-icons/pi';
 import { Outlet } from 'react-router-dom';
 import Drawer, { ItemProps } from './components/Drawer';
@@ -28,11 +29,14 @@ import useDrawer from './hooks/useDrawer';
 import useConversation from './hooks/useConversation';
 import PopupInterUseCasesDemo from './components/PopupInterUseCasesDemo';
 import useInterUseCases from './hooks/useInterUseCases';
+import { MODELS } from './hooks/useModel';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const agentEnabled: boolean = import.meta.env.VITE_APP_AGENT_ENABLED === 'true';
 const recognizeFileEnabled: boolean =
   import.meta.env.VITE_APP_RECOGNIZE_FILE_ENABLED === 'true';
+const { multiModalModelIds } = MODELS;
+const multiModalEnabled: boolean = multiModalModelIds.length > 0;
 
 const items: ItemProps[] = [
   {
@@ -105,6 +109,14 @@ const items: ItemProps[] = [
     icon: <PiImages />,
     display: 'usecase' as const,
   },
+  multiModalEnabled
+    ? {
+        label: '映像分析',
+        to: '/video',
+        icon: <PiVideoCamera />,
+        display: 'usecase' as const,
+      }
+    : null,
   {
     label: '音声認識',
     to: '/transcribe',
@@ -134,20 +146,56 @@ const items: ItemProps[] = [
     display: 'template' as const,
   },
   {
-    label: 'デザイナー向け',
-    to: '/templates/tags/00000000-0000-0000-0000-000000000001',
+    label: '営業マネジメント',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000020',
     icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
     display: 'template' as const,
   },
   {
-    label: '営業向け',
-    to: '/templates/tags/00000000-0000-0000-0000-000000000002',
+    label: 'スタッフマネジメント',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000021',
     icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
     display: 'template' as const,
   },
   {
-    label: 'マーチャンダイザー向け',
-    to: '/templates/tags/00000000-0000-0000-0000-000000000003',
+    label: '企画（MD）',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000022',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: 'デザイナー',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000023',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: '生産',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000024',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: 'DB',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000025',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: '販売（営業）',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000026',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: 'EC',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000027',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'template' as const,
+  },
+  {
+    label: 'エンジニア',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000028',
     icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
     display: 'template' as const,
   },
@@ -306,6 +354,102 @@ const items: ItemProps[] = [
     to: '/templates/tags',
     icon: <PiMagnifyingGlass className="w-4 fill-white" />,
     display: 'template' as const,
+  },
+  {
+    label: 'ガーメントグループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000004',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '素材開発／販売グループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000005',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: 'グローバルブランドグループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000006',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: 'マテリアルグループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000007',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: 'ライフスタイルグループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000008',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '経営企画セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000009',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '物流セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000010',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '業務監査セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000011',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '法務・コンプライアンスセクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000012',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: 'システムセクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000013',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '人材開発セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000014',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '総務セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000015',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '経理セクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000016',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '広報・IRセクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000017',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: '営業サポートセクション',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000018',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
+  },
+  {
+    label: 'QC管理グループ',
+    to: '/templates/tags/00000000-0000-0000-0000-000000000019',
+    icon: <PiChatCenteredTextThin className="w-4 fill-white" />,
+    display: 'templateSec' as const,
   },
 ].flatMap((i) => (i !== null ? [i] : []));
 
